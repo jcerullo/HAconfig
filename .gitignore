@@ -5,7 +5,7 @@
 
 # whitelist pattern of files and directories to share:
 !*.yaml
-!README.rd
+!README.md
 !.gitignore
 
 # do not share the following specific files:
