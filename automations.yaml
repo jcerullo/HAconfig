@@ -1,0 +1,279 @@
+#
+# automations.yaml
+#   
+- id: Turn_on_system_light
+  alias: HA startup
+  description: ''
+  trigger:
+  - event: start
+    platform: homeassistant
+  condition: []
+  action:
+  - data: {}
+    entity_id: switch.system_up_light
+    service: switch.turn_on
+  - data_template:
+      entity_id: media_player.kitchen_speaker
+      message: "Home Assistant is now fully operational"
+    service: tts.google_translate_say    
+      
+- id: detect_shutdown_button
+  alias: detect shutdown button
+  initial_state: true
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.shutdown_switch
+    to: 'on'
+  action:
+  - service: hassio.host_shutdown
+
+- id: Turn_on_red_LED 
+  alias: S2 Button Red LED On
+  description: Turn on red led
+  trigger:
+  - entity_id: binary_sensor.sdk_pushbutton_s2
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition: []
+  action:
+  - data: {}
+    entity_id: switch.sdk_red_led
+    service: switch.turn_on
+    
+- id: Turn_off_red_LED
+  alias: S2 Button Red LED Off
+  description: Turn off red led
+  trigger:
+  - entity_id: binary_sensor.sdk_pushbutton_s2
+    from: 'on'
+    platform: state
+    to: 'off'
+  condition: []
+  action:
+  - entity_id: switch.sdk_red_led
+    service: switch.turn_off
+    
+- id: Turn_on_green_LED
+  alias: S3 Button Green LED On
+  description: Turn on green led
+  trigger:
+  - entity_id: binary_sensor.sdk_pushbutton_s3
+    platform: state
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: switch.turn_on
+    entity_id: switch.sdk_green_led
+  - service: notify.pushover_to_jcerullo
+    data_template:
+      message: >-      
+        {## Set criteria variables: ##}
+        {% set my_json = 
+          {
+          "playtoday": "sensor.play_today",
+          "weather": "weather.homenh"
+          }
+        %}
+        {% if is_state(my_json.playtoday, "false") -%}
+          No tennis is scheduled for today.
+        {%- else -%}
+          {%- if is_state(my_json.weather, "rain") -%}
+            Tennis at {{ states('sensor.tennis_location') }} is iffy today
+            with rain in the forecast.
+          {%- else -%}
+            Tennis is scheduled today at {{states('sensor.tennis_location') }}.
+            Starting time is {{ states('sensor.play_start_time') }} A M.
+          {%- endif -%}
+        {%- endif %}
+ 
+- id: Turn_off_green_LED
+  alias: S3 Button Green LED Off
+  description: Turn off green led
+  trigger:
+  - entity_id: binary_sensor.sdk_pushbutton_s3
+    platform: state
+    from: 'on'
+    to: 'off'
+  condition: []
+  action:
+  - service: switch.turn_off
+    entity_id: switch.sdk_green_led
+
+# Audible Clock
+- id: Speak_time_every_hour
+  alias: Speak time every hour
+  description: ''
+  trigger:
+  - minutes: '0'
+    platform: time_pattern
+  condition:
+  - after: 08:00
+    before: '20:00'
+    condition: time
+  action:
+  - data_template:
+      entity_id: media_player.kitchen_speaker
+      message: "The time is {{ now().time().strftime('%-I:%M %p') }} "
+    service: tts.google_translate_say
+    
+# Audible announcement of tennis activity at 5am
+- id: Speak_tennis_activity
+  alias: Speak tennis activity every morning
+  description: ''
+  trigger:
+  - minutes: '0'
+    platform: time_pattern
+  condition:
+  - after: '04:15'
+    before: '05:30'
+    condition: time
+  action:
+  - service: tts.google_translate_say
+    data_template:
+      entity_id: media_player.kitchen_speaker
+      message: >-      
+        {## Set criteria variables: ##}
+        {% set my_json = 
+          {
+          "playtoday": "sensor.play_today",
+          "weather": "weather.homenh"
+          }
+        %}
+        {% if is_state(my_json.playtoday, "false") -%}
+          No tennis is scheduled for today.
+        {%- else -%}
+          {%- if is_state(my_json.weather, "rain") -%}
+            Tennis at {{ states('sensor.tennis_location') }} is iffy today
+            with rain in the forecast.
+          {%- else -%}
+            Tennis is scheduled today at {{states('sensor.tennis_location') }}.
+            Starting time is {{ states('sensor.play_start_time') }} A M.
+          {%- endif -%}
+        {%- endif %}
+        
+# Runs when Jeri changes location and John is not home
+- id: Jeri_changes_location_John_not_home
+  alias: detect jeris location john not home
+  trigger:  
+  - entity_id: person.jeri
+    platform: state
+    from: 'not_home'
+    to: '*'
+  condition:
+    - condition: state
+      entity_id: person.john
+      state: 'not_home'     
+  action: 
+  - data:
+      message: "Jeri is at {{ states('person.jeri') }} ."
+    service: notify.pushover_to_jcerullo
+
+# Runs when Jeri changes location and John is home
+- id: Jeri_changes_location
+  alias: detect jeris location 
+  trigger:  
+  - entity_id: person.jeri     
+    platform: state
+    from: 'not_home'
+    to: '*'
+  condition:
+    - condition: state
+      entity_id: person.john
+      state: 'home'
+  action: 
+  - data_template:
+      entity_id: media_player.kitchen_speaker
+      message: "Jeri is at {{ states('person.jeri') }} "
+    service: tts.google_translate_say
+  - data_template:
+      entity_id: media_player.game_room_speaker
+      message: "Jeri is at {{ states('person.jeri') }} "
+    service: tts.google_translate_say
+  - data:
+      message: "Jeri is at {{ states('person.jeri') }} "
+    service: notify.pushover_to_jcerullo 
+    
+# Runs when John changes location
+- id: John_changes_location
+  alias: detect johns location
+  trigger:  
+  - entity_id: person.john
+    platform: state
+    from: 'not_home'
+    to: '*'
+  action:
+  - data_template:
+      entity_id: media_player.basement_speaker
+      message: "John is at {{ states('person.john') }} "
+    service: tts.google_translate_say  
+  - data_template:
+      entity_id: media_player.kitchen_speaker
+      message: "John is at {{ states('person.john') }} "
+    service: tts.google_translate_say
+
+# Runs when the garage door is left open for two hours
+- id: auto_garage_left_open
+  alias: garage door left open
+  initial_state: true
+  trigger:
+  - platform: state
+    entity_id: cover.garage_door_opener
+    to: 'open'
+    for:
+      minutes: 120
+  action:
+  - data_template:
+      entity_id: group.speakers
+      message: "the garage door is still open"
+    service: tts.google_translate_say
+  - data:
+      message: "the garage door has been open for two hours"
+    service: notify.pushover_to_jcerullo
+
+# Auto-renew failed if the below condition value is true. Restart DuckDns to renew certificates.
+- id: Update-SSL-Certificates
+  mode: single
+  trigger:
+  - platform: time
+    at: '06:00:00'     
+  condition:
+    condition: template
+    value_template: "{{ ((as_timestamp(states('sensor.cert_expiry_timestamp_thevillages_duckdns_org_8123')) - now().timestamp()) / 86400) | int < 25 }}"
+  action:
+  - service: hassio.addon_start
+    data:
+      addon: core_duckdns    
+  - service: notify.pushover_to_jcerullo
+    data_template:
+      message: "SSL certificate auto-renewal initiated.  Check cert_expiry sensor for successful completion."
+      
+# DuckDns restart failed if the below condition value is true. Action runs once a day starting 20 days before SSL certificates are about to expire.
+- id: Warning-that-certificates-are-about-to-expire
+  alias: certificate warning
+  trigger:
+  - platform: time
+    at: '07:00:00'
+  condition:
+    condition: template    
+    value_template: "{{ ((as_timestamp(states('sensor.cert_expiry_timestamp_thevillages_duckdns_org_8123')) - now().timestamp()) / 86400) | int < 21 }}"
+  action:
+  - service: notify.pushover_to_jcerullo
+    data:
+      message: "Certificates are about to expire.  Restart DuckDns; check the log; run Task Scheduler to update Tennis certificates."
+            
+# Announce when SSL certificates will expire.
+- id: announcement-that-certificates-are-about-to-expire
+  alias: certificate announcement
+  trigger:
+  - platform: time
+    at: '15:20:27'
+  condition:
+    condition: template    
+    value_template: "{{ ((as_timestamp(states('sensor.cert_expiry_timestamp_thevillages_duckdns_org_8123')) - now().timestamp()) / 86400) | int < 32 }}"
+  action:
+  - service: notify.pushover_to_jcerullo
+    data:
+      message: Certificates will expire in {{ ((as_timestamp(states('sensor.cert_expiry_timestamp_thevillages_duckdns_org_8123')) - now().timestamp()) / 86400) | int }} day, 8 minutes
+     
