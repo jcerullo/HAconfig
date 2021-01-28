@@ -1,0 +1,129 @@
+#
+# sensors.yaml
+#
+
+- platform: time_date
+  display_options:
+    - 'date'
+
+- platform: systemmonitor
+  resources:
+    - type: disk_use_percent
+      arg: /
+    - type: memory_free
+    
+# The state_topic string examples below match the default format
+# published by ESPEasy.  If your published format is different,
+# you will need to edit accordingly.
+
+# For those using the On-Ramp sketch, this is how the topic strings
+# are defined.  You will need to modify the state_topic below to match
+#
+    #define BUTTON_TOPIC       "jcerullo/BUTTON"
+    #define TEMPERATURE_TOPIC  "jcerullo/TEMPERATURE"
+    #define HUMIDITY_TOPIC     "jcerullo/HUMIDITY"
+    #define PRESSURE_TOPIC     "jcerullo/PRESSURE"
+    #define LIGHT_TOPIC        "jcerullo/LIGHT"
+    #today: "`r format(Sys.Date(), '%B %d, %Y')`"
+    
+# Note in the case of ESPEasy, yourtopleveltopic is the device name assigned
+# in the Config tab under Name
+#
+- platform: mqtt
+  name: "SDK Temperature"
+  state_topic: "ESPclass/TempHum/Temperature"
+  qos: 0
+  unit_of_measurement: "ºF"
+
+- platform: mqtt
+  name: "SDK Humidity"
+  state_topic: "ESPclass/TempHum/Humidity"
+  qos: 0
+  unit_of_measurement: "%"
+  
+- platform: mqtt
+  name: "SDK Voltage"
+  state_topic: "ESPclass/VarResistor/Volts"
+  qos: 0
+  unit_of_measurement: "Volts"
+  
+# These sensors interface my tennis app
+# with home assistant
+#  
+- platform: mqtt
+  name: "League"
+  state_topic: "tennis/entity/playleague"
+  qos: 0
+  
+- platform: mqtt
+  name: "Play Today"
+  state_topic: "tennis/entity/playtoday"
+  qos: 0
+  
+- platform: mqtt
+  name: "Play Date"
+  state_topic: "tennis/entity/playdate"
+  qos: 0
+
+- platform: mqtt
+  name: "Play Start Time"
+  state_topic: "tennis/entity/playstarttime"
+  qos: 0
+  
+- platform: mqtt
+  name: "Tennis Location"
+  state_topic: "tennis/entity/playlocation"
+
+- platform: mqtt
+  name: "Tennis Player 1"
+  state_topic: "tennis/entity/player1"
+  qos: 0
+  
+- platform: mqtt
+  name: "Tennis Player 2"
+  state_topic: "tennis/entity/player2"
+  qos: 0
+
+- platform: mqtt
+  name: "Tennis Player 3"
+  state_topic: "tennis/entity/player3"
+  qos: 0
+  
+- platform: mqtt
+  name: "Tennis Player 4"
+  state_topic: "tennis/entity/player4"
+  qos: 0
+
+- platform: mqtt
+  name: "Tennis Player 5"
+  state_topic: "tennis/entity/player5"
+  qos: 0
+
+- platform: mqtt
+  name: "Tennis Player 6"
+  state_topic: "tennis/entity/player6"
+  qos: 0
+  
+- platform: mqtt
+  name: "Tennis Player 7"
+  state_topic: "tennis/entity/player7"
+  qos: 0
+
+- platform: mqtt
+  name: "Tennis Player 8"
+  state_topic: "tennis/entity/player8"
+  qos: 0
+  
+  #
+  # Templates for turning attributes into sensor entities
+  #
+- platform: template
+  sensors:
+    outside_temperature:
+      friendly_name: "Outside Temperature"
+      unit_of_measurement:  "ºF"
+      value_template: "{{ state_attr('weather.homenh', 'temperature') }}"
+    inside_temperature:
+      friendly_name: "Inside Temperature"
+      unit_of_measurement:  "ºF"
+      value_template: "{{ states('sensor.sdk_temperature') }}"      

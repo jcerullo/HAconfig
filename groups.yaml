@@ -1,0 +1,11 @@
+#
+# groups.yaml 
+#
+  speakers:
+    name: Speakers
+    entities:
+     - media_player.kitchen_speaker
+     - media_player.guest_room_speaker
+     - media_player.basement_speaker
+     - media_player.game_room_speaker       
+     - media_player.master_bedroom_speaker  

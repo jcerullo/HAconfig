@@ -1,0 +1,74 @@
+#
+# switches.yaml
+#
+
+- platform: rpi_gpio
+  invert_logic: true
+  ports:
+    22: System Up Light
+
+#
+# The following six MQTT switches are used with ESPEasy
+# in ESPEasy, the subtopic "gpio" is followed by the gpio
+# number as the following subtopic to control the output
+# of the gpio pin
+#
+
+# state_topic is the subscription topic to monitor a state
+# command_topic is the pulication topic to set a state
+
+- platform: mqtt
+  name: "SDK White LED"
+  state_topic: "ESPclass/gpio/14"
+  command_topic: "ESPclass/gpio/14"
+  payload_on: 1
+  payload_off: 0
+  qos: 0
+  retain: true
+  
+- platform: mqtt
+  name: "SDK Red LED"
+  state_topic: "ESPclass/gpio/15"
+  command_topic: "ESPclass/gpio/15"
+  payload_on: 1
+  payload_off: 0
+  qos: 0
+  retain: true
+  
+- platform: mqtt
+  name: "SDK Green LED"
+  state_topic: "ESPclass/gpio/13"
+  command_topic: "ESPclass/gpio/13"
+  payload_on: 1
+  payload_off: 0
+  qos: 0
+  retain: true
+  
+- platform: mqtt
+  name: "SDK Blue LED"
+  state_topic: "ESPclass/gpio/12"
+  command_topic: "ESPclass/gpio/12"
+  payload_on: 1
+  payload_off: 0
+  qos: 0
+  retain: true
+  
+- platform: mqtt
+  name: "SDK Relay"
+  state_topic: "ESPclass/gpio/16"
+  command_topic: "ESPclass/gpio/16"
+  payload_on: 1
+  payload_off: 0
+  qos: 0
+  retain: true
+  
+- platform: mqtt
+  name: "SDK Beeper"
+  state_topic: "ESPclass/gpio/5"
+  command_topic: "ESPclass/gpio/5"
+  payload_on: 1
+  payload_off: 0
+  qos: 0
+  retain: true
+  
+  

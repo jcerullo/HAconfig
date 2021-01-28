@@ -1,0 +1,6 @@
+# notifiers.yaml 
+
+- name: pushover_to_jcerullo
+  platform: pushover
+  api_key: !secret pushover_api_key
+  user_key: !secret pushover_user_key

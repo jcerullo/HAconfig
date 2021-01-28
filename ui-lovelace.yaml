@@ -1,0 +1,168 @@
+#
+# Lovelace UI
+#
+
+title: My NH Home
+views:
+      
+  - title: weathermap
+    panel: true
+    cards:
+      - type: iframe
+        url: https://embed.windy.com/embed2.html?lat=42.9482&lon=-70.7870&zoom=7&level=surface&overlay=wind&menu=&message=&marker=&calendar=&pressure=&type=map&location=coordinates&detail=&detailLat=42.916&detailLon=-70.917&metricWind=default&metricTemp=default&radarRange=-1
+        aspect_ratio: 75%
+        
+  - title: find-me
+    panel: true
+    cards:
+      - type: map
+        aspect_ratio: 16:9
+        default_zoom: 8
+        entities:
+          - person.john
+          - person.jeri
+          - person.helen
+          
+  - title: Home 
+    cards:
+      - type: glance
+        title: Message Intercom
+        columns: 2
+        show_state: true
+        entities:
+          - entity: group.speakers
+            name: All Speakers 
+            icon: mdi:volume-high            
+          - entity: media_player.kitchen_speaker
+            name: Kitchen 
+          - entity: media_player.basement_speaker
+            name: Basement            
+          - entity: media_player.game_room_speaker
+            name: Game Rm
+          - entity: media_player.guest_room_speaker
+            name: Guest BR
+          - entity: media_player.master_bedroom_speaker
+            name: Master BR
+            
+      - type: glance
+        title: Location Information
+        columns: 2
+        show_state: true
+        entities:
+          - entity: person.john
+            name: John's Location
+          - entity: person.jeri
+            name: Jeri's Location
+#          - entity: person.helen
+#            name: Helen's Location
+          
+      - type: entities
+        title: 'Next Tennis Activity: '
+        show_state: true
+        columns: 1
+        entities:
+          - entity: sensor.league
+            name: 'Activity:'
+            icon: ' '
+          - entity: sensor.play_date
+            name: 'Date:'
+            icon: ' '
+          - entity: sensor.play_start_time
+            name: 'Start Time:'
+            icon: ' '
+          - entity: sensor.tennis_location
+            name: 'Court:'
+            icon: ' '
+                     
+      - type: entities
+        title: 'Players:'
+        columns: 1
+        show_state: true
+        show_header_toggle: false        
+        entities:
+          - entity: sensor.tennis_player_1
+            name: ' '
+            icon: ' '
+          - entity: sensor.tennis_player_2
+            name: ' '
+            icon: ' '
+          - entity: sensor.tennis_player_3
+            name: ' '
+            icon: ' '
+          - entity: sensor.tennis_player_4
+            name: ' ' 
+            icon: ' '
+          - entity: sensor.tennis_player_5
+            name: ' '
+            icon: ' '
+          - entity: sensor.tennis_player_6
+            name: ' '
+            icon: ' '
+          - entity: sensor.tennis_player_7
+            name: ' '
+            icon: ' '
+          - entity: sensor.tennis_player_8
+            name: ' '
+            icon: ' '
+            
+  - title: WHite Board 
+    cards:
+      - type: glance
+        title: Sensors
+        show_state: true
+        entities:
+          - entity: sensor.sdk_temperature
+            name: Temp
+          - entity: sensor.sdk_humidity
+            name: Hum
+          - entity: sensor.sdk_voltage
+            name: Volt
+          - entity: binary_sensor.sdk_pushbutton_s2
+            name: S2
+          - entity: binary_sensor.sdk_pushbutton_s3
+            name: S3
+          
+      - type: glance
+        title: Switches
+        show_state: true
+        columns: 4
+        entities:
+          - entity: switch.sdk_red_led
+            name: Red LED
+          - entity: switch.sdk_green_led
+            name: Green LED
+          - entity: switch.sdk_blue_led
+            name: Blue LED
+          - entity: switch.sdk_white_led
+            name: White LED
+          - entity: switch.sdk_beeper
+            name: Beeper
+          - entity: switch.sdk_relay
+            name: Relay
+
+      - type: glance
+        title: Script Test
+        show_state: true
+        entities:
+          - script.1583016300421
+          
+      - entity: media_player.mpd
+        type: media-control
+          
+  - title: System
+    cards:
+      - type: entities
+        title: System Information
+        show_state: true
+        entities:
+          - entity: sensor.local_ip
+            name: Local IP
+          - entity: sensor.memory_free
+            name: Free Memory
+          - entity: sensor.disk_use_percent
+            name: Disk Usage
+          - entity: switch.system_up_light
+            name: System Up Light
+          - entity: sensor.cert_expiry_timestamp_thevillages_duckdns_org_8123
+            name: Certificate Expiration        
+           

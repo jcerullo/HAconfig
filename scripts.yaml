@@ -1,0 +1,33 @@
+#
+# scripts.yaml
+#
+'1583016300421':
+  alias: Sequence LEDs
+  sequence:
+  - entity_id: switch.sdk_red_led
+    service: switch.turn_on
+  - delay: 00:00:01
+  - entity_id: switch.sdk_red_led
+    service: switch.turn_off
+  - delay: 00:00:01
+  - entity_id: switch.sdk_green_led
+    service: switch.turn_on
+  - delay: 00:00:01
+  - entity_id: switch.sdk_green_led
+    service: switch.turn_off
+  - delay: 00:00:01
+  - entity_id: switch.sdk_blue_led
+    service: switch.turn_on
+  - delay: 00:00:01
+  - entity_id: switch.sdk_blue_led
+    service: switch.turn_off
+  - entity_id: switch.sdk_white_led
+    service: switch.turn_on
+  - delay: 00:00:01
+  - entity_id: switch.sdk_white_led
+    service: switch.turn_off
+  - entity_id: switch.sdk_beeper
+    service: switch.turn_on
+  - delay: 00:00:01
+  - entity_id: switch.sdk_beeper
+    service: switch.turn_off
