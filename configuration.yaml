@@ -1,0 +1,123 @@
+#
+# configuration.yaml 
+#
+homeassistant:
+
+  # Location required to calculate the time the sun rises and sets.  Set to current location.
+  latitude: !secret latitude_homeNH
+  longitude: !secret longitude_homeNH
+  elevation: 30
+  # Name of the location where Home Assistant is running.  Set to current location.
+  name: HomeNH
+  # C for Celcius, F for Fahrenheit
+  temperature_unit: F
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: America/New_York
+  unit_system: imperial
+  # customize: !include customize.yaml
+  
+# Enables configuration UI
+#config:
+lovelace:
+  mode: yaml
+  resources:
+# Needed for Wind map  
+    - url: /local/plan-coordinates.js?v=2
+      type: js
+# Needed for iCloud3 lovelace interface
+#   - url: /local/custom_cards/icloud3-event-log-card.js?v=1.001
+#      type: js    
+      
+system_health:
+sun: 
+history:
+mobile_app:
+logbook:
+recorder:  
+local_ip:
+
+http:
+  ssl_certificate: !secret ssl_certificate
+  ssl_key: !secret ssl_key
+  ip_ban_enabled: false
+  
+# InfluxDB Integration
+influxdb:
+  host: a0d7b954-influxdb
+  port: 8086
+  database: homeassistant
+  username: !secret influxuser
+  password: !secret influxpassword
+  max_retries: 3
+  default_measurement: state
+    
+# Person Tracking 
+#   uses two tracking methods - life360 and Apple icloud 
+person:                                              # Person tracking combines various device trackers
+  - name: John
+    id: jcerullo
+    device_trackers:
+      - device_tracker.johns_iphone6
+      - device_tracker.life360_john
+  - name: Jeri
+    id: jericerullo
+    device_trackers:
+      - device_tracker.life360_jeri
+      - device_tracker.jeris_iphone6s
+#  - name: Helen
+#    id: helenpasterczyk
+#    device_trackers:
+#      - device_tracker.life360_helen_pasterczyk
+life360:                                             # life360 device tracking
+  accounts:
+    - username: !secret life360_john
+      password: !secret life360_john_password
+#    - username: !secret life360_jeri
+#      password: !secret life360_jeri_password
+  max_update_wait:
+    minutes: 10
+    
+device_tracker:  
+  - platform: icloud3                                # Apple iCloud device tracking 
+    username: !secret icloud_john                    # Use John's family share for tracking
+    password: !secret icloud_john_password
+    group: family
+    tracking_method: famshr
+    track_devices:
+      - jeris_iphone6s                              # A made-up iCloud3 suffix is required for some reason
+      - johns_iphone6    
+
+# Text to speech
+tts:
+- platform: google_translate
+  base_url: !secret base_url
+  cache: true
+
+# Speakers Integration  
+cast:
+media_player:
+  - platform: mpd
+    host: 127.0.0.1
+    port: 6600
+
+# Garage Door Sensor Integration
+cover:
+  - platform: myq
+    username: !secret myq_username
+    password: !secret myq_password
+    
+# Apple Homekit Integration
+#homekit:
+    
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+zone: !include zones.yaml
+sensor: !include sensors.yaml
+binary_sensor: !include binary_sensors.yaml
+switch: !include switches.yaml
+notify: !include notifiers.yaml
+google_assistant: !include googleassistant.yaml
+
+
