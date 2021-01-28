@@ -1,0 +1,14 @@
+# .gitignore
+
+# default everything to 'do not share':
+*
+
+# whitelist pattern of files and directories to share:
+!*.yaml
+!README.rd
+!.gitignore
+
+# do not share the following specific files:
+secrets.yaml
+known_devices.yaml
+

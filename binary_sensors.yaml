@@ -1,0 +1,23 @@
+#
+# binary_sensors.yaml
+#
+
+- platform: rpi_gpio
+  bouncetime: 100
+  invert_logic: true
+  ports:
+    03: Shutdown Switch
+
+- platform: mqtt
+  name: "SDK Pushbutton S2"
+  state_topic: "ESPclass/S2/State"
+  payload_on: "1"
+  payload_off: "0"
+  qos: 0
+  
+- platform: mqtt
+  name: "SDK Pushbutton S3"
+  state_topic: "ESPclass/S3/State"
+  payload_on: "1"
+  payload_off: "0"
+  qos: 0
